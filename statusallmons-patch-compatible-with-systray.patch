@@ -1,0 +1,43 @@
+From 539b2a0b6d0d35b61053dfd32c91ad41b122c727 Mon Sep 17 00:00:00 2001
+From: Spigell <spigelly@gmail.com>
+Date: Sat, 6 Mar 2021 16:31:16 +0300
+Subject: [PATCH 2/2] statusallmons patch compatible with systray patch
+
+OriginPatch: https://dwm.suckless.org/patches/statusallmons/
+---
+ dwm.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/dwm.c b/dwm.c
+index 3e361fa..adabdca 100644
+--- a/dwm.c
++++ b/dwm.c
+@@ -799,7 +799,7 @@ drawbar(Monitor *m)
+ 		stw = getsystraywidth();
+ 
+ 	/* draw status first so it can be overdrawn by tags later */
+-	if (m == selmon) { /* status is only drawn on selected monitor */
++	if (m == selmon || 1) { /* status is only drawn on selected monitor */
+ 		drw_setscheme(drw, scheme[SchemeNorm]);
+ 		sw = TEXTW(stext) - lrpad / 2 + 2; /* 2px right padding */
+ 		drw_text(drw, m->ww - sw - stw, 0, sw, bh, lrpad / 2 - 2, stext, 0);
+@@ -2198,12 +2198,15 @@ updatesizehints(Client *c)
+ void
+ updatestatus(void)
+ {
++	Monitor* m;
+ 	if (!gettextprop(root, XA_WM_NAME, stext, sizeof(stext)))
+ 		strcpy(stext, "dwm-"VERSION);
+-	drawbar(selmon);
++	for(m = mons; m; m = m->next)
++		drawbar(m);
+ 	updatesystray();
+ }
+ 
++
+ void
+ updatesystrayicongeom(Client *i, int w, int h)
+ {
+-- 
+2.30.1
+
